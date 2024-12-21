@@ -37,12 +37,7 @@ func init() {
 	}
 }
 
-type ServiceConfig struct {
-	Host    string `json:"host"`
-	Port    int    `json:"port"`
-	Count   int    `json:"count"`
-	Version string `json:"version"`
-}
+
 
 func LoadServiceConfig(filePath string) (*ServiceConfig, error) {
 	file, err := os.Open(filePath)
@@ -62,24 +57,30 @@ func LoadServiceConfig(filePath string) (*ServiceConfig, error) {
 	return &config, nil
 }
 
-type ServiceShortnessLink struct {
+type ServiceShortLink struct {
 	redisClient *redis.Client
+	cfg         *ServiceConfig
 }
 
-func NewServiceShortnessLink(ctx context.Context, cfg *ServiceConfig, redisClient *redis.Client) error {
+func NewServiceShortnessLink(ctx context.Context, cfg *ServiceConfig, redisClient *redis.Client) *ServiceShortLink {
 
-	service := &ServiceShortnessLink{
+	service := &ServiceShortLink{
 		redisClient: redisClient,
+		cfg:         cfg,
 	}
 
-	handler := http.NewServeMux()
-	handler.HandleFunc("GET /short", service.GetFullURLbyShortLink)
-	handler.HandleFunc("POST /short", service.CreateShortLink)
-
-	return http.ListenAndServe(fmt.Sprintf("%v:%v", cfg.Host, cfg.Port), handler)
+	return service
 }
 
-func (s *ServiceShortnessLink) CreateShortLink(w http.ResponseWriter, r *http.Request) {
+func (s *ServiceShortLink) Run() error {
+	handler := http.NewServeMux()
+	handler.HandleFunc("GET /short", s.GetFullURLbyShortLink)
+	handler.HandleFunc("POST /short", s.CreateShortLink)
+
+	return http.ListenAndServe(fmt.Sprintf("%v:%v", s.cfg.Host, s.cfg.Port), handler)
+}
+
+func (s *ServiceShortLink) CreateShortLink(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -154,7 +155,7 @@ func (s *ServiceShortnessLink) CreateShortLink(w http.ResponseWriter, r *http.Re
 	w.WriteHeader(http.StatusOK)
 }
 
-func (s *ServiceShortnessLink) GetFullURLbyShortLink(w http.ResponseWriter, r *http.Request) {
+func (s *ServiceShortLink) GetFullURLbyShortLink(w http.ResponseWriter, r *http.Request) {
 	// Retrieve short link from request parameters
 	shortLink := r.URL.Query().Get("short")
 

@@ -1,4 +1,4 @@
-module github.com/AlekseyPromet/algo/redis
+module github.com/AlekseyPromet/algo/link_shortner
 
 go 1.23.1
 
