@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Short url form</title>
+    <style>
+        /* Basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <form action="/firstForm">
+        <h2>Shortner url</h2>
+
+        <div>
+            <label for="fullUrl">Full url:</label>
+            <input type="text" id="fullUrl" name="fullUrl" required>
+        </div>
+
+        <div>
+            <label for="ttl">Time to live:</label>
+            <input type="text" id="ttl" name="ttl" required>
+            <small>Enter in seconds (optional, default is 3600s)</small>
+        </div>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <div id="result"></div>
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+{
+    "Host": "localhost",
+    "Port": 3000,
+    "Routes": [
+        {
+            "Method": "GET",
+            "Path": "/short",
+            "Handler": "handlers.GetShortURI"
+        },
+        {
+            "Method": "POST",
+            "Path": "/short",
+            "Handler": "handlers.CreateShortURI"
+        }
+    ]
+}
